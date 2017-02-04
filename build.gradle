@@ -1,0 +1,43 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'wz.test.maven'
+version = '1.0-SNAPSHOT'
+
+description = """"""
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+        
+     maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+}
+dependencies {
+    compile group: 'junit', name: 'junit', version:'3.8.1'
+    compile group: 'org.apache.directory.studio', name: 'org.apache.commons.io', version:'2.4'
+}
+
+jar {
+  manifest {
+    attributes(
+//      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+	   'Class-Path': configurations.runtime.files.collect { 'libs'+"/$it.name" }.join(' '),
+      'Main-Class': 'wz.test.maven.dirzip.DirZip'
+    )
+  }
+}
+
+task copyDependencies(type: Copy) {
+   from configurations.compile
+   into 'build/libs/libs'
+}
+
+//
+// build/libs:
+//gradle   build copyDependencies
